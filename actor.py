@@ -34,15 +34,15 @@ class Actor(object):
         #    self.shoppedToday = False
         
         if self.shoppedToday == False and self.shop == None:
-            self.goToShops(time,Neighbourhood.shops,appFunction)
+            self.goToShops(time,Neighbourhood,appFunction)
 
-    def goToShops(self,time, shopList, appFunction): 
+    def goToShops(self,time, neighbourhood, appFunction): 
         roll = random()
         odds = shopTimeChance[int(time%24)] / 12
-        shop = choice(shopList)
+        shop = choice(neighbourhood.shops)
 
         if roll<=odds:
-            adjustedShop = appFunction[self.appMode](shop)
+            adjustedShop = appFunction[self.appMode](shop, neighbourhood)
             if adjustedShop==None:
                 pass
             else:

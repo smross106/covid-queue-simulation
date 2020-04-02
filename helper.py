@@ -15,7 +15,7 @@ def setup(gridWidth,nShops):
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    strategies = [0,1,1,1]
+    strategies = [2,0]
 
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
