@@ -1,10 +1,10 @@
 def blind(shop):
     queue = len(shop.queue)
-    return(True)
+    return(shop)
 
 def block(shop):
     queue = len(shop.queue)
     if queue>shop.throughput:
-        return(False)
+        return(None)
     else:
-        return(True)
+        return(shop)

@@ -30,8 +30,8 @@ class Actor(object):
 
 
     def run(self,time, Neighbourhood, appFunction):
-        if time%24==0:
-            self.shoppedToday = False
+        #if time%24==0:
+        #    self.shoppedToday = False
         
         if self.shoppedToday == False and self.shop == None:
             self.goToShops(time,Neighbourhood.shops,appFunction)
@@ -40,9 +40,14 @@ class Actor(object):
         roll = random()
         odds = shopTimeChance[int(time%24)] / 12
         shop = choice(shopList)
-        if roll<=odds and appFunction[self.appMode](shop):
-            self.shoppedToday = True
-            self.targetShops = shop
+
+        if roll<=odds:
+            adjustedShop = appFunction[self.appMode](shop)
+            if adjustedShop==None:
+                pass
+            else:
+                self.shoppedToday = True
+                self.targetShops = shop
             
     
     def draw(self,screen, tick):
@@ -83,6 +88,24 @@ class Actor(object):
 
             pygame.draw.circle(screen,(255,255,255),(newX,newY),circleSize)
 
+    def shadowDraw(self,tick):
+
+
+        if self.shop == None and self.targetShops == None:
+            #At home
+            pass
+        
+        if self.targetShops!=None and self.shop==None:
+            self.shop = self.targetShops
+            self.shop.queue.append(self)
+
+        
+        if self.shop!=None and self.targetShops==self.shop:
+            #At the shops
+            pass
+        
+        if self.shop!=None and self.targetShops==None:
+            self.shop = None
 
 
             
@@ -103,10 +126,11 @@ class Shop(object):
         self.historicQueue = []
     
     def run(self, time):
+
         self.historicQueue.append(len(self.queue))
-        print(len(self.queue))
-        if time%24==0:
-            self.historicQueue=[]
+
+        #if time%24==0:
+        #    self.historicQueue=[]
         if len(self.queue)==0:
             pass
         else:
