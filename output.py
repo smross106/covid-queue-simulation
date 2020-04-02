@@ -68,7 +68,7 @@ for i in range(0,nMean):
 plt.plot(newTimeData,meanQueueData,linewidth=3)
 
 plt.plot([0,24],[10,10],color="red")
-plt.title("100% following block technique, "+str(int(100*fed/len(actors)))+"% of people fed")
+plt.title("75% following blind, 25% block technique, "+str(int(100*fed/len(actors)))+"% of people fed")
 plt.xlim([0,24])
 plt.ylim(0)
 

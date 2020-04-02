@@ -1,6 +1,6 @@
 import csv
 from actor import Shop, Neighbourhood, Actor
-from random import randint
+from random import randint, choice
 
 def setup(gridWidth,nShops):
     gridSize = 8
@@ -14,10 +14,13 @@ def setup(gridWidth,nShops):
     hood = Neighbourhood(shops)
     shopLocations = [i.location for i in hood.shops]
     actors = []
+
+    strategies = [0,1,1,1]
+
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
             if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
-                new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],1)
+                new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(strategies))
                 actors.append(new)
     
     return(actors,hood)
