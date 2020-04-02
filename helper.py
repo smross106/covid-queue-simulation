@@ -17,7 +17,7 @@ def setup(gridWidth,nShops):
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
             if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
-                new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],randint(0,1))
+                new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],1)
                 actors.append(new)
     
     return(actors,hood)
