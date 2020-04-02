@@ -18,9 +18,10 @@ shopTimeChance = [0,0,0,0,0,0,0.05,0.1,0.2,0.15,0.15,0.15,0.15,0.2,0.4,0.5,0.3,0
 
 
 class Actor(object):
-    def __init__(self, homeLocation):
+    def __init__(self, homeLocation,appMode):
         self.homeLocation = homeLocation
         self.shoppedToday = False
+        self.appMode = appMode
 
         self.location = homeLocation
 
@@ -39,7 +40,7 @@ class Actor(object):
         roll = random()
         odds = shopTimeChance[int(time%24)] / 12
         shop = choice(shopList)
-        if roll<=odds and appFunction(shop):
+        if roll<=odds and appFunction[self.appMode](shop):
             self.shoppedToday = True
             self.targetShops = shop
             
