@@ -17,7 +17,8 @@ import pygame
 shopTimeChance = [0,0,0,0,0,0,0.05,0.1,0.2,0.15,0.15,0.15,0.15,0.2,0.4,0.5,0.3,0.3,0.4,0.4,0.3,0.2,0.1,0.05,0]
 
 
-class Actor1(object):
+class Actor(object):
+    #This actor acts on a whim to go to the shops and may or may not check the app before doing so
     def __init__(self, homeLocation,appMode):
         self.homeLocation = homeLocation
         self.shoppedToday = False
@@ -99,7 +100,7 @@ class Actor1(object):
 
             pygame.draw.circle(screen,(255,255,255),(newX,newY),circleSize)
 
-    def shadowDraw(self,tick):
+    def shadowDraw(self):
         if self.mode==0:
             #At home
             pass
@@ -120,8 +121,98 @@ class Actor1(object):
             self.mode = 0
 
 
-            
+class Actor2(object):
+    #This Actor is smarter, they will set a preferred shop at the start of the day and 
+    #then use the app to determine the best time to visit
+    #They will also check if a shop queue is too long when they arrive and go somewhere else if it is
 
+    def __init__(self,homeLocation,appMode):
+        self.homeLocation = homeLocation
+
+        self.previousLocation = homeLocation
+        
+        self.appMode = appMode
+
+        self.shoppedToday = False
+        self.preferredShop = None
+
+        self.shopAt = None
+        self.shopTarget = None
+
+        self.mode = 0
+
+        self.key = None
+    
+    def run(self,time,neighbourhood,appFunction):
+        if time==0:
+            self.preferredShop = choice(neighbourhood.shops)
+            self.key = appFunction[self.appMode-10](self.preferredShop,neighbourhood)
+        
+        if time==self.key["slot"] and self.shoppedToday==False:
+            self.mode = 1
+            self.shopTarget = self.key["shop"]
+
+
+
+    def draw(self,screen,tick):    
+        circleSize = 2
+
+        if self.mode==0:
+            #At home
+            if self.shoppedToday:
+                pygame.draw.circle(screen,(0,127,0),self.homeLocation,circleSize)
+            else:
+                pygame.draw.circle(screen,(255,0,0),self.homeLocation,circleSize)
+        
+        if self.mode==1:
+            #Moving to the shops from home
+            newX = int((self.shopTarget.location[0]-self.previousLocation[0])/10 * (tick+1)) + self.previousLocation[0]
+            newY = int((self.shopTarget.location[1]-self.previousLocation[1])/10 * (tick+1)) + self.previousLocation[1]
+            if [newX,newY] == self.shopTarget.location:
+                self.shopAt = self.shopTarget
+                self.shopAt.queue.append(self)
+                self.mode=2
+                self.shoppedToday = True
+
+            pygame.draw.circle(screen,(0,255,0),(newX,newY),circleSize)
+        
+        if self.mode==2:
+            #At the shops
+            pygame.draw.circle(screen,(0,0,255),self.shopAt.location,circleSize)
+        
+        if self.mode==3:
+            #Moving home from the shops
+            newX = int((self.homeLocation[0]-self.previousLocation[0])/10 * (tick+1)) + self.previousLocation[0]
+            newY = int((self.homeLocation[1]-self.previousLocation[1])/10 * (9-tick+1)) + self.previousLocation[1]
+            if [newX,newY] == self.homeLocation:
+                self.shopAt = None
+                self.mode = 0
+        
+            pygame.draw.circle(screen,(255,255,255),(newX,newY),circleSize)
+    
+    def shadowDraw(self):    
+
+        if self.mode==0:
+            #At home
+            self.previousLocation = self.homeLocation
+        
+        if self.mode==1:
+            #Moving to the shops from home
+            self.shopAt = self.shopTarget
+            self.shopAt.queue.append(self)
+            self.mode=2
+            self.shoppedToday = True
+            self.previousLocation = self.shopAt.location
+        
+        if self.mode==2:
+            #At the shops
+            pass
+        
+        if self.mode==3:
+            #Moving home from the shops
+            self.shopAt = None
+            self.mode = 0
+        
 
 class Neighbourhood(object):
     def __init__(self,shops):
@@ -165,5 +256,16 @@ class Shop(object):
                 self.queue[0].mode = 3
                 self.queue.remove(self.queue[0])
         
-        
+    def draw(self,screen):
+        width = 20
+        height = 2*self.throughput
+
+        barheight = 2*len(self.queue)
+
+       
+
+        pygame.draw.rect(screen,(0,255,0),(self.location[0]-int(width/2),self.location[1],width,barheight))
+        pygame.draw.rect(screen,(0,0,255),(self.location[0]-int(width/2),self.location[1],width,height),2)
+
+
 

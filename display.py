@@ -57,6 +57,8 @@ while running:
     #Draw all actors
     for i in actors:
         i.draw(screen,tick%10)
+    for i in hood.shops:
+        i.draw(screen)
 
     #Draw graph
     for i in range(0,1):
