@@ -1,26 +1,51 @@
 import csv
-from actor import Shop, Neighbourhood, Actor
+from actor import Shop, Neighbourhood, Actor, Actor2
 from random import randint, choice
 
 def setup(gridWidth,nShops):
     gridSize = 8
     gridOffset = 50
-    #gridWidth = 50
-    #nShops = int(gridWidth**2 / 100)
-    #TOTALLY ARBITRARY DECISION of 100 people shopping per day per shop
+
     shops = []
+    XSpacing = int(gridSize*gridWidth/nShops)
     for i in range(0,nShops):
-        shops.append(Shop([(gridSize*randint(0,gridWidth))+gridOffset,(gridSize*randint(0,gridWidth))+gridOffset],10))
+        shops.append(Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],10))
     hood = Neighbourhood(shops)
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    strategies = [4,4]
+    strategies = [10,10]
 
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
             if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
                 new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(strategies))
+                actors.append(new)
+    
+    return(actors,hood)
+
+def setup2(gridWidth,nShops,percentSmart):
+    gridSize = 8
+    gridOffset = 50
+
+    shops = []
+    XSpacing = int(gridSize*gridWidth/nShops)
+    for i in range(0,nShops):
+        shops.append(Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],10))
+    hood = Neighbourhood(shops)
+    shopLocations = [i.location for i in hood.shops]
+    actors = []
+
+    actor1strategies = [0,0]
+    actor2strategies = [10,10]
+
+    for i in range(0,gridWidth):
+        for j in range(0,gridWidth):
+            if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
+                if randint(0,100)<percentSmart:
+                    new = Actor2([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor2strategies))
+                else:
+                    new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor1strategies))
                 actors.append(new)
     
     return(actors,hood)
