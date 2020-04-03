@@ -24,3 +24,22 @@ def another(shop, neighbourhood):
             return(None)
         else:
             return(newShop)
+
+def quietest(shop,neighbourhood):
+    if len(shop.queue)<shop.throughput:
+        return(shop)
+    else:
+        queues = []
+        for i in neighbourhood.shops:
+            queues.append([len(i.queue),i])
+        return(sorted(queues)[0][1])
+
+def oneofquietest(shop,neighbourhood):
+    if len(shop.queue)<shop.throughput:
+        return(shop)
+    else:
+        queues = []
+        for i in neighbourhood.shops:
+            queues.append([len(i.queue),i])
+        tenpercent = int(len(queues)/10)
+        return(choice(sorted(queues)[0:tenpercent])[1])

@@ -17,7 +17,7 @@ import pygame
 shopTimeChance = [0,0,0,0,0,0,0.05,0.1,0.2,0.15,0.15,0.15,0.15,0.2,0.4,0.5,0.3,0.3,0.4,0.4,0.3,0.2,0.1,0.05,0]
 
 
-class Actor(object):
+class Actor1(object):
     def __init__(self, homeLocation,appMode):
         self.homeLocation = homeLocation
         self.shoppedToday = False
@@ -25,15 +25,23 @@ class Actor(object):
 
         self.location = homeLocation
 
+        #what shop am I trying to get to
         self.targetShops = None
+        #what shop am I at
         self.shop = None
+
+        self.mode = 0
+        #0 - at home
+        #1 - moving to shops
+        #2 - at shops
+        #3 - moving home
 
 
     def run(self,time, Neighbourhood, appFunction):
         #if time%24==0:
         #    self.shoppedToday = False
         
-        if self.shoppedToday == False and self.shop == None:
+        if self.shoppedToday == False:
             self.goToShops(time,Neighbourhood,appFunction)
 
     def goToShops(self,time, neighbourhood, appFunction): 
@@ -43,18 +51,19 @@ class Actor(object):
 
         if roll<=odds:
             adjustedShop = appFunction[self.appMode](shop, neighbourhood)
-            if adjustedShop==None:
+            
+            if type(adjustedShop)!=Shop:
                 pass
             else:
                 self.shoppedToday = True
                 self.targetShops = shop
-            
-    
+                self.mode = 1
+
     def draw(self,screen, tick):
         circleSize = 2
 
 
-        if self.shop == None and self.targetShops == None:
+        if self.mode==0:
             #At home
             x = int(self.homeLocation[0] )
             y = int(self.homeLocation[1])
@@ -64,48 +73,51 @@ class Actor(object):
             else:
                 pygame.draw.circle(screen,(255,0,0),(x,y),circleSize)
         
-        if self.targetShops!=None and self.shop==None:
+        if self.mode==1:
             #Moving to the shops from home
             newX = int((self.targetShops.location[0]-self.homeLocation[0])/10 * (tick+1)) + self.homeLocation[0]
             newY = int((self.targetShops.location[1]-self.homeLocation[1])/10 * (tick+1)) + self.homeLocation[1]
             if [newX,newY] == self.targetShops.location:
                 self.shop = self.targetShops
                 self.shop.queue.append(self)
+                self.mode=2
 
             pygame.draw.circle(screen,(0,255,0),(newX,newY),circleSize)
         
-        if self.shop!=None and self.targetShops==self.shop:
+        if self.mode==2:
             #At the shops
             pygame.draw.circle(screen,(0,0,255),self.shop.location,circleSize)
         
-        if self.shop!=None and self.targetShops==None:
+        if self.mode==3:
             #Moving home from the shops
             newX = int((self.shop.location[0]-self.homeLocation[0])/10 * (9-tick)) + self.homeLocation[0]
             newY = int((self.shop.location[1]-self.homeLocation[1])/10 * (9-tick)) + self.homeLocation[1]
             if [newX,newY] == self.homeLocation:
                 self.shop = None
+                self.mode = 0
         
 
             pygame.draw.circle(screen,(255,255,255),(newX,newY),circleSize)
 
     def shadowDraw(self,tick):
-
-
-        if self.shop == None and self.targetShops == None:
+        if self.mode==0:
             #At home
             pass
         
-        if self.targetShops!=None and self.shop==None:
+        if self.mode==1:
+            #Move to target shop
             self.shop = self.targetShops
             self.shop.queue.append(self)
+            self.mode = 2
 
         
-        if self.shop!=None and self.targetShops==self.shop:
+        if self.mode==2:
             #At the shops
             pass
         
-        if self.shop!=None and self.targetShops==None:
+        if self.mode==3:
             self.shop = None
+            self.mode = 0
 
 
             
@@ -124,6 +136,15 @@ class Shop(object):
         self.queue = []
 
         self.historicQueue = []
+
+    def __lt__(self,other):
+        return(self)
+    
+    def __eq__(self,other):
+        return(self)
+    
+    def __gt__(self,other):
+        return(self)
     
     def run(self, time):
 
@@ -141,6 +162,7 @@ class Shop(object):
             
             for i in range(0,processed):
                 self.queue[0].targetShops=None
+                self.queue[0].mode = 3
                 self.queue.remove(self.queue[0])
         
         

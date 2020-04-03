@@ -15,7 +15,7 @@ endTick = 6*10*24
 
 size = 8
 actors,hood = helper.setup(64*size,5*(size**2))
-
+#actors,hood = helper.setup(28,1)
 timedata = []
 
 while tick<endTick:
@@ -23,7 +23,7 @@ while tick<endTick:
     if tick%10==0:
         print("\t",str(int(hour))+":"+str(int(hour%1 * 60)))
         for i in actors:
-            i.run(hour,hood,[blind,block,another])
+            i.run(hour,hood,[blind,block,another, quietest, oneofquietest])
         
         for shop in hood.shops:
             shop.run(hour)
@@ -42,7 +42,7 @@ fed = 0
 for i in actors:
     if i.shoppedToday:fed+=1
 
-nMean = 10
+nMean = 20
 
 newTimeData = []
 for i in timedata:
@@ -68,7 +68,7 @@ for i in range(0,nMean):
 plt.plot(newTimeData,meanQueueData,linewidth=3)
 
 plt.plot([0,24],[10,10],color="red")
-plt.title("50% 'another', 50% 'blind' technique, "+str(int(100*fed/len(actors)))+"% of people fed")
+plt.title("100% 'one_of_quietest' technique, "+str(int(100*fed/len(actors)))+"% of people fed")
 plt.xlim([0,24])
 plt.ylim(0)
 

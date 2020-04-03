@@ -36,7 +36,7 @@ def graph(screen,x,y,xScale,yScale,data,limit):
         pygame.draw.line(screen,col,(x+int(i*xScale),y-int(point*yScale)),(x+int((i+1)*xScale),y-int(nextPoint*yScale)),1)
 
 
-actors,hood = helper.setup(64,10)
+actors,hood = helper.setup(64,5)
 
 while running:
     for event in pygame.event.get():
@@ -71,6 +71,6 @@ while running:
 """
 
     pygame.display.update()
-    clock.tick(90)
+    clock.tick(60)
     tick += 1
     hour = (tick/60)%24
