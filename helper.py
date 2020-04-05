@@ -37,15 +37,13 @@ def setup2(gridWidth,percentSmart):
     shops = []
     XSpacing = int(gridSize*gridWidth/nShops)
     for i in range(0,nShops):
-        new = Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],12)
-        #new.run(0,0)
-        #new.historicQueue = []
+        new = Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],10)
         shops.append(new)
     hood = Neighbourhood(shops)
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    actor1strategies = [0]
+    actor1strategies = [1]
     actor2strategies = [13]
 
     for i in range(0,gridWidth):

@@ -18,8 +18,8 @@ endTick = 6*10*24 * nDays
 def roundMean(x):
     return("{:.2f}".format((int(mean(x)*10)/10.)))
 
-size = 10
-actors,hood = helper.setup2(30*size,90)
+size = 5
+actors,hood = helper.setup2(30*size,100)
 
 timedata = []
 
@@ -102,7 +102,7 @@ if GRAPHMODE==0:
 
 
 
-plt.title("10% 'blind', 90% 'allocated slot at random' technique \n "+str(int(100*fed/len(actors)))+"% of people fed \n Day 1 average queue length: "+roundMean(meanQueueData[0:144])+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
+plt.title("100% 'allocated slot at random' technique, more people per shop \n "+str(int(100*fed/len(actors)))+"% of people fed \n Day 1 average queue length: "+roundMean(meanQueueData[:144])+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
 
 plt.ylim(0)
 

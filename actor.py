@@ -4,8 +4,7 @@ Sets up the Actor class, the simple agent that simulates human behaviour
 
 
 Some parameters
-15 steps per timestep, 2 timesteps per second
-Each Actor moves randomly in a 5x5 pixel grid to keep the screen dynamic
+10 steps per timestep
 """
 
 from random import random, choice, randint
