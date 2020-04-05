@@ -6,6 +6,9 @@ def setup(gridWidth,nShops):
     gridSize = 8
     gridOffset = 50
 
+    #Data supports the theory of ~1000 people per shop per day
+    nShops = int((gridWidth**2) / 1000)
+
     shops = []
     XSpacing = int(gridSize*gridWidth/nShops)
     for i in range(0,nShops):
@@ -14,7 +17,7 @@ def setup(gridWidth,nShops):
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    strategies = [10,10]
+    strategies = [0,0]
 
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
@@ -28,21 +31,27 @@ def setup2(gridWidth,nShops,percentSmart):
     gridSize = 8
     gridOffset = 50
 
+    #Data supports the theory of ~1000 people per shop per day
+    nShops = int((gridWidth**2) / 1000)
+
     shops = []
     XSpacing = int(gridSize*gridWidth/nShops)
     for i in range(0,nShops):
-        shops.append(Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],10))
+        new = Shop([(XSpacing*i)+gridOffset,(gridSize*gridWidth)+int(gridOffset*1.5)],12)
+        #new.run(0,0)
+        #new.historicQueue = []
+        shops.append(new)
     hood = Neighbourhood(shops)
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
     actor1strategies = [0,0]
-    actor2strategies = [10,10]
+    actor2strategies = [13]
 
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
             if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
-                if randint(0,100)<percentSmart:
+                if randint(0,100)<=percentSmart:
                     new = Actor2([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor2strategies))
                 else:
                     new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor1strategies))

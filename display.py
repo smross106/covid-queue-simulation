@@ -52,7 +52,7 @@ while running:
             i.run(hour,hood,[blind,block])
         
         for shop in hood.shops:
-            shop.run(hour)
+            shop.run(hour,tick)
 
     #Draw all actors
     for i in actors:

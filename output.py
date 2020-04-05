@@ -13,8 +13,8 @@ hour = 0
 endTick = 6*10*24
 
 
-size = 8
-actors,hood = helper.setup(64*size,5*(size**2))
+size = 7
+actors,hood = helper.setup(64*size)
 #actors,hood = helper.setup(28,1)
 timedata = []
 
@@ -26,12 +26,12 @@ while tick<endTick:
             i.run(hour,hood,[blind,block,another, quietest, oneofquietest])
         
         for shop in hood.shops:
-            shop.run(hour)
+            shop.run(hour,tick)
 
         timedata.append(tick)
     
     for i in actors:
-        i.shadowDraw(tick%10)
+        i.shadowDraw()
 
     tick += 10
     hour = (tick/60)%24
@@ -42,7 +42,7 @@ fed = 0
 for i in actors:
     if i.shoppedToday:fed+=1
 
-nMean = 20
+nMean = int(len(hood.shops)/3)
 
 newTimeData = []
 for i in timedata:
@@ -62,6 +62,8 @@ print(fed/len(actors))
 
 print(time.time()-start)
 
+if nMean>20:
+    nMean = 20
 for i in range(0,nMean):
     plt.plot(newTimeData,hood.shops[i].historicQueue,linewidth=0.25)
 

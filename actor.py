@@ -10,11 +10,13 @@ Each Actor moves randomly in a 5x5 pixel grid to keep the screen dynamic
 
 from random import random, choice, randint
 import pygame
+import app1
 
 #This controls the chance of going to the shops at a given hour in the simulation (index 0 is chance of going out at 00:00)
 #Intermediate values found by interpolation
 #These values were chosen arbitrarily, to be replaced by some proper market research
-shopTimeChance = [0,0,0,0,0,0,0.05,0.1,0.2,0.15,0.15,0.15,0.15,0.2,0.4,0.5,0.3,0.3,0.4,0.4,0.3,0.2,0.1,0.05,0]
+shopTimeChance = [0,0,0,0,0,0,0.00152,0.00152,0.00693,0.00693,0.0134,0.0134,
+0.0123,0.0123,0.0150,0.0150,0.0215,0.0215,0.00152,0.00152,0.0112,0.0112,0,0]
 
 
 class Actor(object):
@@ -37,17 +39,19 @@ class Actor(object):
         #2 - at shops
         #3 - moving home
 
+        self.key = {"shop":None, "slot":None}
+
 
     def run(self,time, Neighbourhood, appFunction):
-        #if time%24==0:
-        #    self.shoppedToday = False
+        if time%24==0:
+            self.shoppedToday = False
         
         if self.shoppedToday == False:
             self.goToShops(time,Neighbourhood,appFunction)
 
     def goToShops(self,time, neighbourhood, appFunction): 
         roll = random()
-        odds = shopTimeChance[int(time%24)] / 12
+        odds = shopTimeChance[int(time%24)] 
         shop = choice(neighbourhood.shops)
 
         if roll<=odds:
@@ -144,11 +148,13 @@ class Actor2(object):
         self.key = None
     
     def run(self,time,neighbourhood,appFunction):
-        if time==0:
+        if int((time*6)%(24*6))==0:
+            self.shoppedToday = False
             self.preferredShop = choice(neighbourhood.shops)
             self.key = appFunction[self.appMode-10](self.preferredShop,neighbourhood)
+            
         
-        if time==self.key["slot"] and self.shoppedToday==False:
+        if int((time*6)%(24*6))==int(self.key["slot"]*6) and self.shoppedToday==False and type(self.key["shop"])==Shop:
             self.mode = 1
             self.shopTarget = self.key["shop"]
 
@@ -228,6 +234,10 @@ class Shop(object):
 
         self.historicQueue = []
 
+        self.slots = [0]*24*6
+
+        self.smartSlots = [0]*24*6
+
     def __lt__(self,other):
         return(self)
     
@@ -237,12 +247,19 @@ class Shop(object):
     def __gt__(self,other):
         return(self)
     
-    def run(self, time):
+    def run(self, time, tick):
 
         self.historicQueue.append(len(self.queue))
 
-        #if time%24==0:
-        #    self.historicQueue=[]
+        if time%24==0:
+            print("slots rebuilt")
+            for i in range(0,len(self.slots)):
+                self.slots[i] = self.throughput
+            if len(self.historicQueue)>24*6:
+                offset = len(self.historicQueue)-(24*6)
+                for i in range(0,len(self.smartSlots)):
+                    self.smartSlots[i] = self.throughput-self.historicQueue[offset+i]
+    
         if len(self.queue)==0:
             pass
         else:
