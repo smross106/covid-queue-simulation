@@ -51,7 +51,7 @@ class Actor(object):
 
     def goToShops(self,time, neighbourhood, appFunction): 
         roll = random()
-        odds = shopTimeChance[int(time%24)] 
+        odds = shopTimeChance[int(time%24)] * 1.403
         shop = choice(neighbourhood.shops)
 
         if roll<=odds:
@@ -252,7 +252,6 @@ class Shop(object):
         self.historicQueue.append(len(self.queue))
 
         if time%24==0:
-            print("slots rebuilt")
             for i in range(0,len(self.slots)):
                 self.slots[i] = self.throughput
             if len(self.historicQueue)>24*6:

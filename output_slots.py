@@ -4,12 +4,12 @@ from app1 import *
 from random import randint
 import helper
 import matplotlib.pyplot as plt
-from numpy import mean,zeros
+from numpy import mean,zeros,std
 import time
 
 start = time.time()
 
-nDays = 4
+nDays = 1
 
 tick = 0
 hour = 0
@@ -18,8 +18,8 @@ endTick = 6*10*24 * nDays
 def roundMean(x):
     return("{:.2f}".format((int(mean(x)*10)/10.)))
 
-size = 2
-actors,hood = helper.setup2(64*size,10)
+size = 10
+actors,hood = helper.setup2(30*size,0)
 
 timedata = []
 
@@ -33,7 +33,7 @@ while tick<endTick:
 
         for i in actors:
             if type(i)==Actor:
-                i.run(hour,hood,[blind])
+                i.run(hour,hood,[blind,block,another,quietest,oneofquietest])
             elif type(i)==Actor2:
                 i.run(hour,hood,[randomSlotPref,randomSlotRandom,slotsPerShop,slotsFromBusyYesterday])
         
@@ -79,7 +79,6 @@ if GRAPHMODE==0:
     for i in range(len(timedata)):sumQueueData.append(0)
 
     for i in range(nMean):
-        print(len(hood.shops[i].historicQueue),len(timedata))
         for j in range(daylength):
                 sumQueueData[j]+=hood.shops[i].historicQueue[j]
         plotdata.append(hood.shops[i].historicQueue)
@@ -101,8 +100,18 @@ if GRAPHMODE==0:
     plt.plot([0,24*nDays],[10,10],color="red")
     plt.xlim([0,24*nDays])
 
-plt.title("100% 'random_slot_at_preference' technique \n "+str(int(100*fed/len(actors)))+"% of people fed \n Day 1 average queue length: "+roundMean(meanQueueData[0:144])+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
+
+
+plt.title("80% 'blind', 20% 'block' technique \n "+str(int(100*fed/len(actors)))+"% of people fed \n Average queue length: "+roundMean(meanQueueData[0:144]))#+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
 
 plt.ylim(0)
 
+alldata = []
+for series in plotdata:alldata+=series
+print("Mean",mean(alldata))
+print("Std.Dev",std(alldata))
+print("Max",max(alldata))
+print("Fed",fed/len(actors))
+
 plt.show()
+

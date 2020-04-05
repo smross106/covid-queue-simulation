@@ -2,7 +2,7 @@ import csv
 from actor import Shop, Neighbourhood, Actor, Actor2
 from random import randint, choice
 
-def setup(gridWidth,nShops):
+def setup(gridWidth):
     gridSize = 8
     gridOffset = 50
 
@@ -27,7 +27,7 @@ def setup(gridWidth,nShops):
     
     return(actors,hood)
 
-def setup2(gridWidth,nShops,percentSmart):
+def setup2(gridWidth,percentSmart):
     gridSize = 8
     gridOffset = 50
 
@@ -45,13 +45,13 @@ def setup2(gridWidth,nShops,percentSmart):
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    actor1strategies = [0,0]
+    actor1strategies = [0,0,0,0,0,0,0,0,1,1]
     actor2strategies = [13]
 
     for i in range(0,gridWidth):
         for j in range(0,gridWidth):
             if not ([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset] in shopLocations):
-                if randint(0,100)<=percentSmart:
+                if randint(1,100)<=percentSmart:
                     new = Actor2([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor2strategies))
                 else:
                     new = Actor([(gridSize*i)+gridOffset,(gridSize*j)+gridOffset],choice(actor1strategies))
