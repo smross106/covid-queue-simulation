@@ -9,7 +9,7 @@ import time
 
 start = time.time()
 
-nDays = 1
+nDays = 4
 
 tick = 0
 hour = 0
@@ -19,7 +19,7 @@ def roundMean(x):
     return("{:.2f}".format((int(mean(x)*10)/10.)))
 
 size = 10
-actors,hood = helper.setup2(30*size,0)
+actors,hood = helper.setup2(30*size,90)
 
 timedata = []
 
@@ -102,12 +102,12 @@ if GRAPHMODE==0:
 
 
 
-plt.title("80% 'blind', 20% 'block' technique \n "+str(int(100*fed/len(actors)))+"% of people fed \n Average queue length: "+roundMean(meanQueueData[0:144]))#+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
+plt.title("10% 'blind', 90% 'allocated slot at random' technique \n "+str(int(100*fed/len(actors)))+"% of people fed \n Day 1 average queue length: "+roundMean(meanQueueData[0:144])+"\n Subsequent days average queue length: "+roundMean(meanQueueData[144:]))
 
 plt.ylim(0)
 
 alldata = []
-for series in plotdata:alldata+=series
+for series in plotdata:alldata+=series[144:]
 print("Mean",mean(alldata))
 print("Std.Dev",std(alldata))
 print("Max",max(alldata))

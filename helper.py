@@ -45,7 +45,7 @@ def setup2(gridWidth,percentSmart):
     shopLocations = [i.location for i in hood.shops]
     actors = []
 
-    actor1strategies = [0,0,0,0,0,0,0,0,1,1]
+    actor1strategies = [0]
     actor2strategies = [13]
 
     for i in range(0,gridWidth):
